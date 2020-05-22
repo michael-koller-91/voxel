@@ -8,8 +8,9 @@ include_directories (
     ${Boost_INCLUDE_DIRS}
 )
 
-add_executable (unittests
-    main.cc
+add_executable (${PROJECT_NAME}
+    testmain.cc
+    test_component_manager.cc
     test_entity_manager.cc
 )
-target_link_libraries (unittests libs::src)
+target_link_libraries (${PROJECT_NAME} libs::src)
