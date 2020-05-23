@@ -1,8 +1,10 @@
 cmake_minimum_required (VERSION 3.16)
-project (voxel
+project (
+    voxel
     VERSION 0.1
     DESCRIPTION "A voxel game."
-    LANGUAGES CXX)
+    LANGUAGES CXX
+)
 
 add_subdirectory (src)
 add_subdirectory (app)
