@@ -33,6 +33,11 @@ void EntityManager::DestroyEntity(Entity entity)
     --existing_entities_count_;
 }
 
+ComponentBitField EntityManager::GetBitField(Entity entity)
+{
+    return entity_component_bitfield_[entity.id_];
+}
+
 int EntityManager::GetExistingEntitiesCount()
 {
     return existing_entities_count_;

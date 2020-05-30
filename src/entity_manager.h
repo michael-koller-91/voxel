@@ -15,9 +15,13 @@ class EntityManager
 {
 public:
     EntityManager();
+
     Entity CreateEntity();
     void DestroyEntity(Entity);
+    ComponentBitField GetBitField(Entity);
     int GetExistingEntitiesCount();
+
+    // good old debugging via printing
     void PrintComponentTypeIdMapper();
     void PrintEntityComponentBitfield();
 
@@ -47,14 +51,14 @@ public:
     void AddComponent(Entity entity, T component)
     {
         // set the bit corresponding to the component type to indicate that this entity now "has" the component
-        entity_component_bitfield_[entity.ID_].set(TypeIdOf(component), 1);
+        entity_component_bitfield_[entity.id_].set(TypeIdOf(component), 1);
     }
 
     template <typename T>
     void RemoveComponent(Entity entity, T component)
     {
         // set the bit corresponding to the component type to 0 to indicate that this entity no longer "has" the component
-        entity_component_bitfield_[entity.ID_].set(TypeIdOf(component), 0);
+        entity_component_bitfield_[entity.id_].set(TypeIdOf(component), 0);
     }
 
 private:

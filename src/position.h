@@ -3,5 +3,5 @@
 // for tasting only so far
 struct Position
 {
-    int x;
+    int x = 0;
 };
