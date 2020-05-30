@@ -1,7 +1,6 @@
 project (src)
 
 add_library (${PROJECT_NAME} STATIC
-	entity.cc
 	entity_manager.cc
 )
 
