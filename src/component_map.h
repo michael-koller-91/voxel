@@ -2,7 +2,7 @@
 
 #include <map>
 
-#include "entity.h"
+#include "type.h"
 
 class IComponentMap
 {
@@ -14,5 +14,5 @@ template <typename T>
 class ComponentMap : public IComponentMap
 {
 public:
-    std::map<Entity, T> entity_component_map_;
+    std::map<EntityIdType, T> entity_component_map_;
 };
