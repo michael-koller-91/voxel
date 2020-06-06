@@ -31,11 +31,12 @@ public:
     void RegisterComponent()
     {
         const std::string& type_name = typeid(T).name();
-        // TODO:
-        // check if component type is already known
 
-        // assign an ID to the new component type
+        // assert that component type has not already been registered
+        assert(component_type_id_mapper_.find(type_name) == component_type_id_mapper_.end());
+        // register by assigning an ID to the new component type
         component_type_id_mapper_.insert({type_name, next_component_type_id_});
+
         // make (a pointer to) a map which can hold components of the new component type
         component_map_.insert({next_component_type_id_, std::make_shared<ComponentMap<T>>()});
 
@@ -60,6 +61,8 @@ public:
     template <typename T>
     T& GetComponent(Entity entity)
     {
+        // assert that entity has component T (by checking if the corresponding bit is set)
+        assert(entity_component_bitfield_[entity][TypeIdOf<T>()]);
         return GetComponentMap<T>()->entity_component_map_[entity];
     }
 

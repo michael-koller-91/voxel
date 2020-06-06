@@ -5,10 +5,9 @@
 
 #include "entity.h"
 #include "entity_manager.h"
-#include "position.h"
 #include "type.h"
 
-BOOST_AUTO_TEST_CASE( create_and_destroy_entities )
+BOOST_AUTO_TEST_CASE( create_destroy_entities )
 {
     EntityManager entity_manager;
 
@@ -40,52 +39,109 @@ BOOST_AUTO_TEST_CASE( create_and_destroy_entities )
     BOOST_CHECK_EQUAL(entity_manager.GetExistingEntitiesCount(), 4);
 }
 
-BOOST_AUTO_TEST_CASE( register_and_add_components )
+BOOST_AUTO_TEST_CASE( register_add_get_components )
 {
+    struct TestComponent0
+    {
+        int a = -1;
+    };
+
     struct TestComponent1
     {
-        int a = 123.123;
+        float b = -1;
     };
 
     struct TestComponent2
     {
-        int b = 456.456;
+        bool c = false;
     };
 
+    /* register components and check assigned ID */
     EntityManager entity_manager;
+    entity_manager.RegisterComponent<TestComponent0>();
     entity_manager.RegisterComponent<TestComponent1>();
-    entity_manager.RegisterComponent<Position>();
     entity_manager.RegisterComponent<TestComponent2>();
+    BOOST_CHECK_EQUAL(entity_manager.TypeIdOf<TestComponent0>(), 0);
+    BOOST_CHECK_EQUAL(entity_manager.TypeIdOf<TestComponent1>(), 1);
+    BOOST_CHECK_EQUAL(entity_manager.TypeIdOf<TestComponent2>(), 2);
 
-    TestComponent1 test_component_1;
-    Position position;
-    TestComponent2 test_component_2;
-    BOOST_CHECK_EQUAL(entity_manager.TypeIdOf(test_component_1), 0);
-    BOOST_CHECK_EQUAL(entity_manager.TypeIdOf(position), 1);
-    BOOST_CHECK_EQUAL(entity_manager.TypeIdOf(test_component_2), 2);
+    /* add components to entities and check bit field entries */
+    // entity without components
+    Entity ent0 = entity_manager.CreateEntity();
+    ComponentBitField bitfield0 = entity_manager.GetBitField(ent0);
+    ComponentBitField expected_bitfield0;
+    BOOST_CHECK_EQUAL(bitfield0, expected_bitfield0);
 
     // entity with only one component
     Entity ent1 = entity_manager.CreateEntity();
-    TestComponent2 tc2_1;
-    entity_manager.AddComponent(ent1, tc2_1);
+    entity_manager.AddComponent(ent1, TestComponent2{true});
     ComponentBitField bitfield1 = entity_manager.GetBitField(ent1);
-    // bitfield1[2] must be true since TestComponent2 has type id 2
-    BOOST_CHECK_EQUAL(bitfield1[0], false);
-    BOOST_CHECK_EQUAL(bitfield1[1], false);
-    BOOST_CHECK_EQUAL(bitfield1[2], true);
-    BOOST_CHECK_EQUAL(bitfield1[3], false);
+    ComponentBitField expected_bitfield1;
+    expected_bitfield1.set(2);  // since TestComponent2 has type id 2
+    BOOST_CHECK_EQUAL(bitfield1, expected_bitfield1);
 
     // entity with two components
     Entity ent2 = entity_manager.CreateEntity();
-    TestComponent1 tc1_2;
-    TestComponent2 tc2_2;
-    entity_manager.AddComponent(ent2, tc1_2);
-    entity_manager.AddComponent(ent2, tc2_2);
+    entity_manager.AddComponent(ent2, TestComponent0{20});
+    entity_manager.AddComponent(ent2, TestComponent2{true});
     ComponentBitField bitfield2 = entity_manager.GetBitField(ent2);
-    BOOST_CHECK_EQUAL(bitfield2[0], true);
-    BOOST_CHECK_EQUAL(bitfield2[1], false);
-    BOOST_CHECK_EQUAL(bitfield2[2], true);
-    BOOST_CHECK_EQUAL(bitfield2[3], false);
+    ComponentBitField expected_bitfield2;
+    expected_bitfield2.set(0);
+    expected_bitfield2.set(2);
+    BOOST_CHECK_EQUAL(bitfield2, expected_bitfield2);
 
-    entity_manager.PrintEntityComponentBitfield();
+    // entity with three components (by adding one more component to ent2)
+    entity_manager.AddComponent(ent2, TestComponent1{21});
+    ComponentBitField bitfield3 = entity_manager.GetBitField(ent2);
+    ComponentBitField expected_bitfield3;
+    expected_bitfield3.set(0);
+    expected_bitfield3.set(1);
+    expected_bitfield3.set(2);
+    BOOST_CHECK_EQUAL(bitfield3, expected_bitfield3);
+
+    /* get component bit fields */
+    // bit field without components
+    ComponentBitField cbf = entity_manager.ComponentBitFieldOf<>();
+    ComponentBitField expected_cbf;
+    BOOST_CHECK_EQUAL(cbf, expected_cbf);
+
+    // bit field with one component
+    cbf = entity_manager.ComponentBitFieldOf<TestComponent1>();
+    expected_cbf.reset();
+    expected_cbf.set(1);
+    BOOST_CHECK_EQUAL(cbf, expected_cbf);
+
+    // bit field with two components
+    cbf = entity_manager.ComponentBitFieldOf<TestComponent0, TestComponent2>();
+    expected_cbf.reset();
+    expected_cbf.set(0);
+    expected_cbf.set(2);
+    BOOST_CHECK_EQUAL(cbf, expected_cbf);
+
+    // bit field with three components
+    cbf = entity_manager.ComponentBitFieldOf<TestComponent0, TestComponent1, TestComponent2>();
+    expected_cbf.reset();
+    expected_cbf.set(0);
+    expected_cbf.set(1);
+    expected_cbf.set(2);
+    BOOST_CHECK_EQUAL(cbf, expected_cbf);
+
+    /* get components */
+    // entity with one component
+    Entity ent1comp = entity_manager.CreateEntity();
+    entity_manager.AddComponent(ent1comp, TestComponent0{123});
+    auto& e1tc0 = entity_manager.GetComponent<TestComponent0>(ent1comp);
+    BOOST_CHECK_EQUAL(e1tc0.a, 123);
+    // modify component
+    e1tc0.a *= 2;
+    BOOST_CHECK_EQUAL(entity_manager.GetComponent<TestComponent0>(ent1comp).a, 246);
+
+    // entity with two components
+    Entity ent2comp = entity_manager.CreateEntity();
+    entity_manager.AddComponent(ent2comp, TestComponent0{123});
+    entity_manager.AddComponent(ent2comp, TestComponent2{true});
+    auto& e2tc0 = entity_manager.GetComponent<TestComponent0>(ent2comp);
+    auto& e2tc2 = entity_manager.GetComponent<TestComponent2>(ent2comp);
+    BOOST_CHECK_EQUAL(e2tc0.a, 123);
+    BOOST_CHECK_EQUAL(e2tc2.c, true);
 }
