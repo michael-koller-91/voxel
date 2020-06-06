@@ -18,7 +18,7 @@ Entity EntityManager::CreateEntity()
         Entity entity;
         ComponentBitField component_bitfield;
         entity.id_ = next_entity_id_;
-        entity_component_bitfield_.insert({entity.id_, component_bitfield});
+        entity_component_bitfield_.insert({entity, component_bitfield});
         ++next_entity_id_;
         return entity;
     } else {
@@ -28,19 +28,24 @@ Entity EntityManager::CreateEntity()
 
 void EntityManager::DestroyEntity(Entity entity)
 {
-    entity_component_bitfield_[entity.id_].reset();
+    entity_component_bitfield_[entity].reset();
     available_entities_.push(entity);
     --existing_entities_count_;
 }
 
 ComponentBitField EntityManager::GetBitField(Entity entity)
 {
-    return entity_component_bitfield_[entity.id_];
+    return entity_component_bitfield_[entity];
 }
 
 int EntityManager::GetExistingEntitiesCount()
 {
     return existing_entities_count_;
+}
+
+std::map<Entity, ComponentBitField>& EntityManager::GetEntities()
+{
+    return entity_component_bitfield_;
 }
 
 void EntityManager::PrintComponentTypeIdMapper()
@@ -53,12 +58,12 @@ void EntityManager::PrintComponentTypeIdMapper()
     }
 }
 
-void EntityManager::PrintEntityComponentBitfield()
+void EntityManager::PrintEntityComponentBitField()
 {
     std::cout << "-----entity_component_bitfield\n";
     for (auto const& i : entity_component_bitfield_)
     {
-        std::cout << "entity id: " << i.first << std::endl;
+        std::cout << "entity id: " << i.first.id_ << std::endl;
         std::cout << "entity bit field: " << i.second << std::endl;
     }
 }
