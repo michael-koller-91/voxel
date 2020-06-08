@@ -69,14 +69,13 @@ public:
         return GetComponentMap<T>()->entity_component_map_[entity];
     }
 
-    // convert the given component types to a bit field (where the corresponding bits are set)
+    // convert the given component types (template arguments) to a bit field (where the corresponding bits are set)
     template <typename... T>
     typename std::enable_if<sizeof...(T) == 0, ComponentBitField>::type ComponentBitFieldOf()
     {
         return ComponentBitField();
     }
 
-    // get a bit field where the bits corresponding to the template arguments are set
     template <typename T, typename... Args>
     ComponentBitField ComponentBitFieldOf()
     {
