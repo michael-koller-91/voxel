@@ -27,6 +27,19 @@ A newly created entity will have the component bit field 000.
 If, for instance, a Healthbar component is assigned to the entity,
 the corresponding bit field will change to 100 to reflect this.
 
+For every component type, we have a std::map with entities as keys and components as values.
+For instance, we might have the entity component maps:
+- std::map<Entity, Position>
+- std::map<Entity, Direction>
+- std::map<Entity, Healthbar>
+
+In order not to have distinct variables for all of these entity component maps,
+there is another std::map with component type IDs as keys and shared pointers to the above maps as values.
+This is possible by wrapping every entity component map in a class ComponentMap which
+inherits from a common interface IComponentMap.
+This way, the shared pointers can point to the interface type but we can access the
+entity component maps by casting to the derived class.
+
 ## Versions
 ### 0.2
 - First working entity manager
