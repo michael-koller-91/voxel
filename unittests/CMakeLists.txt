@@ -11,5 +11,7 @@ include_directories (
 add_executable (${PROJECT_NAME}
     testmain.cc
     test_entity_manager.cc
+    test_event_manager.cc
+    test_process_manager.cc
 )
 target_link_libraries (${PROJECT_NAME} libs::src)

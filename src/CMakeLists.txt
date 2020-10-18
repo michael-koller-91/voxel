@@ -2,6 +2,8 @@ project (src)
 
 add_library (${PROJECT_NAME} STATIC
 	entity_manager.cc
+	event_manager.cc
+	process_manager.cc
 )
 
 add_library (libs::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
