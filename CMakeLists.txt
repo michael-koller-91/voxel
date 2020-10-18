@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.16)
 project (
     voxel
-    VERSION 0.2
+    VERSION 0.3
     DESCRIPTION "A voxel game."
     LANGUAGES CXX
 )

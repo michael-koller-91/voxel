@@ -40,7 +40,21 @@ inherits from a common interface IComponentMap.
 This way, the shared pointers can point to the interface type but we can access the
 entity component maps by casting to the derived class.
 
+### Process Manager
+The process manager takes care of all processes (aka systems).
+Examples for processes might be RenderProcess, WindowProcess, or PhysicsProcess.
+Processes need to be registered with a priority (an integer).
+This priority on the one hand serves as a process's unique identifier and on the other hand determines the order in which processes are called.
+Every process needs to implement an update method and the process manager's update method calls all processes' update methods according to the given priority.
+
+There exists a standard map with priorities as keys and processes as values:
+- std::map<int, std::shared_ptr\<IProcess>>
+
+This is used to access registered processes, for example to call the update methods.
+
 ## Versions
+### 0.3
+- First working process manager
 ### 0.2
 - First working entity manager
 ### 0.1
