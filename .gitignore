@@ -1,4 +1,5 @@
 build/
+ignore/
 run.bat
 test.bat
 thoughts.txt

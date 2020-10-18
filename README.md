@@ -27,16 +27,18 @@ A newly created entity will have the component bit field 000.
 If, for instance, a Healthbar component is assigned to the entity,
 the corresponding bit field will change to 100 to reflect this.
 
-For every component type, we have a std::map with entities as keys and components as values.
+For every component type, we have a `std::map` with entities as keys and components as values.
 For instance, we might have the entity component maps:
-- std::map<Entity, Position>
-- std::map<Entity, Direction>
-- std::map<Entity, Healthbar>
+- `std::map<Entity, Position>`
+- `std::map<Entity, Direction>`
+- `std::map<Entity, Healthbar>`
 
 In order not to have distinct variables for all of these entity component maps,
-there is another std::map with component type IDs as keys and shared pointers to the above maps as values.
-This is possible by wrapping every entity component map in a class ComponentMap which
-inherits from a common interface IComponentMap.
+there is another `std::map` with component type IDs as keys and shared pointers to the above maps as values:
+- `std::map<ComponentIdType, std::shared_ptr<IComponentMap>>`
+
+This is possible by wrapping every entity component map in a class `ComponentMap` which
+inherits from a common interface `IComponentMap`.
 This way, the shared pointers can point to the interface type but we can access the
 entity component maps by casting to the derived class.
 
@@ -47,10 +49,12 @@ Processes need to be registered with a priority (an integer).
 This priority on the one hand serves as a process's unique identifier and on the other hand determines the order in which processes are called.
 Every process needs to implement an update method and the process manager's update method calls all processes' update methods according to the given priority.
 
-There exists a standard map with priorities as keys and processes as values:
-- std::map<int, std::shared_ptr\<IProcess>>
+There exists a `std::map` with priorities as keys and processes as values:
+- `std::map<int, std::shared_ptr<IProcess>>`
 
 This is used to access registered processes, for example to call the update methods.
+Here, `IProcess` is a common interface for all processes.
+To access a certain process, the `std::shared_tr<IProcess>>` is cast to the correct derived class (similar to what is done with `IComponentMap`).
 
 ## Versions
 ### 0.3
