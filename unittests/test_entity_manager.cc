@@ -7,21 +7,25 @@
 #include "entity_manager.h"
 #include "type.h"
 
-struct TestComponent0
-{
-    int a = -1;
-};
-struct TestComponent1
-{
-    float b = -1;
-};
-struct TestComponent2
-{
-    bool c = false;
-};
+namespace test_entity_manager_namespace{
+    struct TestComponent0
+    {
+        int a = -1;
+    };
+    struct TestComponent1
+    {
+        float b = -1;
+    };
+    struct TestComponent2
+    {
+        bool c = false;
+    };
+}
 
 BOOST_AUTO_TEST_CASE( create_and_destroy_entities )
 {
+    using namespace test_entity_manager_namespace;
+
     EntityManager entity_manager;
 
     /* create some entities and check if the counter is correct */
@@ -57,6 +61,8 @@ BOOST_AUTO_TEST_CASE( create_and_destroy_entities )
 
 BOOST_AUTO_TEST_CASE( register_add_and_remove_components )
 {
+    using namespace test_entity_manager_namespace;
+
     /* register components and check assigned ID */
 
     EntityManager entity_manager;
@@ -131,6 +137,8 @@ BOOST_AUTO_TEST_CASE( register_add_and_remove_components )
 
 BOOST_AUTO_TEST_CASE( get_components_and_entity_component_map )
 {
+    using namespace test_entity_manager_namespace;
+
     EntityManager entity_manager;
     entity_manager.RegisterComponent<TestComponent0>();
     entity_manager.RegisterComponent<TestComponent1>();

@@ -3,28 +3,32 @@
 #include "process.h"
 #include "process_manager.h"
 
-class TestProcess0 : public IProcess
-{
-public:
-    void update()
+namespace test_process_manager_namespace{
+    class TestProcess0 : public IProcess
     {
-        ++a0;
-    }
-    int a0 = 1;
-};
+    public:
+        void Update()
+        {
+            ++a0;
+        }
+        int a0 = 1;
+    };
 
-class TestProcess1 : public IProcess
-{
-public:
-    void update()
+    class TestProcess1 : public IProcess
     {
-        --a1;
-    }
-    int a1 = -1;
-};
+    public:
+        void Update()
+        {
+            --a1;
+        }
+        int a1 = -1;
+    };
+}
 
-BOOST_AUTO_TEST_CASE( register_get_update_processes )
+BOOST_AUTO_TEST_CASE( register_get_and_update_processes )
 {
+    using namespace test_process_manager_namespace;
+
     /* register processes */
 
     ProcessManager process_manager;
@@ -45,13 +49,13 @@ BOOST_AUTO_TEST_CASE( register_get_update_processes )
 
     /* update processes */
 
-    process_manager.update();
+    process_manager.Update();
     BOOST_CHECK_EQUAL(tp0->a0, 2);
     BOOST_CHECK_EQUAL(tp1->a1, -2);
-    process_manager.update();
+    process_manager.Update();
     BOOST_CHECK_EQUAL(tp0->a0, 3);
     BOOST_CHECK_EQUAL(tp1->a1, -3);
-    process_manager.update();
+    process_manager.Update();
 
     /* get processes again */
 

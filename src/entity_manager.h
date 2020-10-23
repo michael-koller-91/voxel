@@ -6,6 +6,7 @@
 #include <queue>
 #include <string>
 #include <type_traits>
+#include <typeinfo>
 #include <unordered_map>
 
 #include "component_map.h"
@@ -45,7 +46,7 @@ public:
 
     // get the ID assigned to a component type
     template <typename T>
-    ComponentTypeId TypeIdOf()
+    ComponentIdType TypeIdOf()
     {
         return component_type_id_mapper_[typeid(T).name()];
     }
@@ -110,10 +111,10 @@ public:
 private:
     int existing_entities_count_;
     EntityIdType next_entity_id_;
-    ComponentTypeId next_component_type_id_;
+    ComponentIdType next_component_type_id_;
     // queue destroyed entities and reuse them first before creating new ones (when the queue is empty)
     std::queue<Entity> available_entities_;
     std::map<Entity, ComponentBitField> entity_component_bitfield_;
-    std::unordered_map<std::string, ComponentTypeId> component_type_id_mapper_;
-    std::map<ComponentTypeId, std::shared_ptr<IComponentMap>> component_map_;  // unique_ptr?
+    std::unordered_map<std::string, ComponentIdType> component_type_id_mapper_;
+    std::map<ComponentIdType, std::shared_ptr<IComponentMap>> component_map_;
 };
