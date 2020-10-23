@@ -10,8 +10,7 @@
 class ProcessManager
 {
 public:
-    // call update() of all processes
-    void update();
+    void Update();
 
     template <typename T>
     void RegisterProcess(int priority)

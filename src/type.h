@@ -8,3 +8,4 @@ using ComponentBitField = std::bitset<MAX_COMPONENTS>;
 using ComponentIdType = std::uint64_t;
 using EntityIdType = std::uint64_t;
 using EventIdType = std::uint64_t;
+using ProcessIdType = std::uint64_t;

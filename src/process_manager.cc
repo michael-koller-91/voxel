@@ -2,10 +2,10 @@
 
 #include "process_manager.h"
 
-void ProcessManager::update()
+void ProcessManager::Update()
 {
     for (auto const& process: processes_)
     {
-        process.second->update();
+        process.second->Update();
     }
 }
