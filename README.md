@@ -44,10 +44,10 @@ entity component maps by casting to the derived class.
 
 ### Process Manager
 The process manager takes care of all processes (aka systems).
-Examples for processes might be RenderProcess, WindowProcess, or PhysicsProcess.
+Examples of processes might be RenderProcess, PhysicsProcess, or DebugProcess.
 Processes need to be registered with a priority (an integer).
 This priority on the one hand serves as a process's unique identifier and on the other hand determines the order in which processes are called.
-Every process needs to implement an update method and the process manager's update method calls all processes' update methods according to the given priority.
+Every process needs to implement a method `Update` and the process manager's update method calls all processes' update methods according to the given priority.
 
 There exists a `std::map` with priorities as keys and processes as values:
 - `std::map<int, std::shared_ptr<IProcess>>`
@@ -56,10 +56,27 @@ This is used to access registered processes, for example to call the update meth
 Here, `IProcess` is a common interface for all processes.
 To access a certain process, the `std::shared_tr<IProcess>>` is cast to the correct derived class (similar to what is done with `IComponentMap`).
 
+### Event Manager
+Examples of events might be EntityCreated or PlayerMoved.
+Every process which wants to receive a certain event needs to subscribe to it
+(using the method `EventManager::Subscribe`).
+Further, it needs to implement a corresponding method `Receive` 
+which the event manager calls when an event is to be published.
+The event manager has two `std::unordered_map`s for known event and process types subscribed to it.
+Further, there is a
+- `std::map<EventIdType, std::shared_ptr<ICallbackMap>>`
+
+For every event type, `std::shared_ptr<ICallbackMap>` is used to store as callbacks all `Receive` methods of all processes subscribed to the event type.
+The event manager's `Publish` method then calls all the corresponding callbacks to distribute an event.
+Similar to what is done with `IComponentMap`, `std::shared_ptr<ICallbackMap>` is cast
+to the correct derived class (depending on the event type).
+
 ## Versions
+### 0.4
+- Add an event manager.
 ### 0.3
-- First working process manager
+- Add a process manager.
 ### 0.2
-- First working entity manager
+- Add an entity manager.
 ### 0.1
-- CMakeLists configured: building and running tests works
+- CMakeLists configured: building and running tests works.

@@ -15,7 +15,7 @@ public:
     template <typename T>
     void RegisterProcess(int priority)
     {
-        // assert that process has not already been registered
+        // assert that the process has not already been registered
         assert(processes_.find(priority) == processes_.end() && "Process already registered.");
         // priority is also the identifier of a process
         process_type_to_priority_map_.insert({typeid(T).name(), priority});

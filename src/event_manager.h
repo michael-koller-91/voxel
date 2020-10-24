@@ -7,6 +7,7 @@ many processes anyway and unsubcribing and re-subscribing should not happen.
 #pragma once
 
 #include <functional>
+#include <map>
 #include <memory>
 #include <string>
 #include <typeinfo>
@@ -111,5 +112,5 @@ private:
     ProcessIdType next_process_id_;
     std::unordered_map<std::string, EventIdType> event_type_to_id_map_;
     std::unordered_map<std::string, ProcessIdType> process_type_to_id_map_;
-    std::unordered_map<EventIdType, std::shared_ptr<ICallbackMap>> callbacks_map_;
+    std::map<EventIdType, std::shared_ptr<ICallbackMap>> callbacks_map_;
 };
